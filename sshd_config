@@ -1,7 +1,4 @@
 # HostKeys for protocol version 2
-HostKey /git/keys-host/ssh_host_rsa_key
-HostKey /git/keys-host/ssh_host_dsa_key
-HostKey /git/keys-host/ssh_host_ecdsa_key
 HostKey /git/keys-host/ssh_host_ed25519_key
 
 # Authentication:

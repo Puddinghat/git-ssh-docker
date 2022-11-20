@@ -5,8 +5,8 @@ PSHELL=/usr/bin/git-shell
 PUSR=git
 PHOME=/${PUSR}
 PCONFIG=${PHOME}/sshd_config
-PKEYSHOST=${PHOME}/keys-host
 PKEYS=${PHOME}/keys
+PKEYSEXTRA=${PHOME}/keys-extra
 PREPOS=${PHOME}/repos
 
 # Minimum UID/GID allowed
@@ -49,15 +49,6 @@ adduser -D -h ${PHOME}/ -G ${PUSR} -u ${PUID} -s ${PSHELL} ${PUSR}
 echo "${PUSR}:dummyPassword" | chpasswd
 chown -R ${PUSR}:${PUSR} ${PHOME}/ > /dev/null 2>&1
 
-# If no SSH host key pairs are present, generate them
-if [ -z "$(ls -A ${PKEYSHOST}/)" ]; then
-    mkdir -p ${PKEYSHOST}/etc/ssh/ && \
-    ssh-keygen -A -f ./keys-host && \
-    mv ${PKEYSHOST}/etc/ssh/* ${PKEYSHOST}/ && \
-    rm -rf ${PKEYSHOST}/etc/
-    chown -R ${PUSR}:${PUSR} ${PKEYSHOST}/
-fi
-
 # If SSH public keys are present, copy them into the `authorized_keys` file
 if [ -n "$(ls -A ${PKEYS}/)" ]; then
     cat ${PKEYS}/*.pub > ${PHOME}/.ssh/authorized_keys
@@ -67,6 +58,12 @@ else
     # container with no SSH public keys present.
     echo '' > ${PHOME}/.ssh/authorized_keys
 fi
+
+# If SSH public keys are present, copy them into the `authorized_keys` file
+if [ -n "$(ls -A ${PKEYSEXTRA}/)" ]; then
+    cat ${PKEYSEXTRA}/*.pub >> ${PHOME}/.ssh/authorized_keys
+fi
+
 
 # Generate an SSH key pair for Docker `HEALTHCHECK`
 rm -rf ${PHOME}/.ssh/id_ed25519*

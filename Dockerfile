@@ -6,7 +6,8 @@ LABEL description="Git over SSH with UID/GID handling"
 
 RUN apk add --no-cache \
         git \
-        openssh
+        openssh \
+        curl   
 
 WORKDIR /git/
 
